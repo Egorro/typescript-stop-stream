@@ -1,23 +1,15 @@
 // Import stylesheets
 import "./style.css";
-import { interval } from "rxjs";
+import { Observable, interval } from "rxjs";
 import { map, filter } from "rxjs/operators";
 
-// Write TypeScript code!
-const appDiv: HTMLElement = document.getElementById("app");
-appDiv.innerHTML = `<h1>TypeScript Starter</h1>`;
+const stream$ = new Observable(observer => {
+  setTimeout(() => observer.next(1), 100);
+  setTimeout(() => observer.error('error'), 1000);
+});
 
-const countText = document.getElementById("count");
-const stop = document.getElementById("stopBtn");
-const count$ = interval(1000);
-
-const countSubscription = count$
-  .pipe(
-    filter(val => val !== 0),
-    map(val => `Текущий счетчик: ${val}`)
-  )
-  .subscribe(val => {
-    countText.innerHTML = String(val);
-  });
-
-stop.addEventListener("click", () => countSubscription.unsubscribe());
+const subscription = stream$.subscribe(
+  val => console.log('value: ', val),
+  val => console.log('error text: ', val),
+  () => console.log('comlete')
+);
